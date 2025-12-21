@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Product Categories Enum
+enum ProductCategory {
+  RING
+  NECKLACE
+  BRACELET
+  EARRINGS
+  PENDANT
+  SET
+  OTHER
+}
+
+// Main Product/Jewelry Model
+model Product {
+  id              String          @id @default(cuid())
+  name            String
+  nameHy          String?         // Armenian name
+  description     String          @db.Text
+  descriptionHy   String?         @db.Text // Armenian description
+  price           Float
+  category        ProductCategory
+  material        String          // e.g., "Gold", "Silver", "Diamond"
+  weight          Float?          // in grams
+  size            String?         // e.g., "Size 7", "18 inches"
+  images          String[]        // Array of image URLs
+  inStock         Boolean         @default(true)
+  featured        Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([category])
+  @@index([featured])
+  @@index([inStock])
+}
+
+// Admin User Model (for later authentication)
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Will be hashed
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
