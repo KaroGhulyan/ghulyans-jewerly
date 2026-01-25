@@ -1,28 +1,28 @@
 "use client"
 
 import Link from "next/link"
-import {ShoppingCart, Menu, Search} from "lucide-react"
-import {Button} from "@/components/ui/button"
+import { ShoppingCart, Menu, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export function Header() {
     return (
         <header
             className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-            <div className="container flex h-16 items-center justify-between">
+            <div className="container mx-auto px-4 md:px-6 flex h-16 items-center justify-between">
                 {/* Mobile Menu Button */}
                 <Button variant="ghost" size="icon" className="md:hidden">
-                    <Menu className="h-5 w-5"/>
+                    <Menu className="h-5 w-5" />
                 </Button>
 
                 {/* Logo */}
                 <Link href="/" className="flex items-center space-x-2">
                     <div className="flex flex-col">
-            <span className="text-xl md:text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent">
-              Ghulyan's Jewelry
-            </span>
+                        <span className="text-xl md:text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent">
+                            Ghulyan's Jewelry
+                        </span>
                         <span className="text-xs text-gray-500 hidden sm:block">
-              Handcrafted with Love
-            </span>
+                            Handcrafted with Love
+                        </span>
                     </div>
                 </Link>
 
@@ -57,15 +57,15 @@ export function Header() {
                 {/* Right Side Icons */}
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" className="hidden sm:flex">
-                        <Search className="h-5 w-5"/>
+                        <Search className="h-5 w-5" />
                     </Button>
                     <Button variant="ghost" size="icon" className="relative">
-                        <ShoppingCart className="h-5 w-5"/>
+                        <ShoppingCart className="h-5 w-5" />
                         {/* Cart Count Badge */}
                         <span
                             className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center">
-              0
-            </span>
+                            0
+                        </span>
                     </Button>
                 </div>
             </div>
