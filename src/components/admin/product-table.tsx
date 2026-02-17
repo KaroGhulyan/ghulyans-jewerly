@@ -7,6 +7,18 @@ import { Edit, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useLanguage } from "@/components/providers/language-context"
 
 interface ProductTableProps {
     products: Product[]
@@ -14,10 +26,9 @@ interface ProductTableProps {
 
 export function ProductTable({ products }: ProductTableProps) {
     const router = useRouter()
+    const { t } = useLanguage()
 
     async function onDelete(id: string) {
-        if (!confirm("Are you sure you want to delete this product?")) return
-
         try {
             await fetch(`/api/products/${id}`, {
                 method: "DELETE",
@@ -39,6 +50,7 @@ export function ProductTable({ products }: ProductTableProps) {
                                 Image
                             </th>
                             <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                                {/*Name*/} {t.admin.products} {/* Using generic "Products" or maybe add "Name" key later if needed, but for now products is ok or manual text */}
                                 Name
                             </th>
                             <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
@@ -92,7 +104,7 @@ export function ProductTable({ products }: ProductTableProps) {
                                     <td className="p-4 align-middle">${product.price.toFixed(2)}</td>
                                     <td className="p-4 align-middle">
                                         <Badge variant={product.inStock ? "default" : "secondary"}>
-                                            {product.inStock ? "In Stock" : "Out of Stock"}
+                                            {product.inStock ? t.common.inStock : t.common.outOfStock}
                                         </Badge>
                                     </td>
                                     <td className="p-4 align-middle">
@@ -105,14 +117,35 @@ export function ProductTable({ products }: ProductTableProps) {
                                                     <Edit className="h-4 w-4" />
                                                 </Link>
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                onClick={() => onDelete(product.id)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>{t.admin.deleteConfirmTitle}</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            {t.admin.deleteConfirmDesc}
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>{t.admin.cancel}</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() => onDelete(product.id)}
+                                                            className="bg-red-600 hover:bg-red-700"
+                                                        >
+                                                            {t.admin.delete}
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </div>
                                     </td>
                                 </tr>

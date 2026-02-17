@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { ProductGrid } from "@/components/product/product-grid"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { Hero } from "@/components/home/hero"
 
 export default async function Home() {
     // Fetch featured products
@@ -30,30 +31,8 @@ export default async function Home() {
     return (
         <div className="flex flex-col">
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-b from-primary-50 to-white py-20 md:py-32">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto text-center space-y-6">
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                            Exquisite Ghulyan's Jewelry
-                        </h1>
-                        <p className="text-xl text-gray-600">
-                            Handcrafted with love and tradition. Discover our collection of unique pieces.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                            <Button size="lg" asChild>
-                                <Link href="/products">
-                                    Shop All Jewelry
-                                </Link>
-                            </Button>
-                            <Button size="lg" variant="outline" asChild>
-                                <Link href="/featured">
-                                    View Featured
-                                </Link>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <Hero />
+
 
             {/* Featured Products Section */}
             {featuredProducts.length > 0 && (

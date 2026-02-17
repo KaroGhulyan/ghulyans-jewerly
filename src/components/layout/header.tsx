@@ -3,8 +3,12 @@
 import Link from "next/link"
 import { ShoppingCart, Menu, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { LanguageSwitcher } from "@/components/layout/language-switcher"
+import { useLanguage } from "@/components/providers/language-context"
 
 export function Header() {
+    const { t } = useLanguage()
+
     return (
         <header
             className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -32,30 +36,31 @@ export function Header() {
                         href="/"
                         className="text-sm font-medium transition-colors hover:text-primary-600"
                     >
-                        Home
+                        {t.nav.home}
                     </Link>
                     <Link
                         href="/products"
                         className="text-sm font-medium transition-colors hover:text-primary-600"
                     >
-                        All Jewelry
+                        {t.nav.products}
                     </Link>
                     <Link
                         href="/featured"
                         className="text-sm font-medium transition-colors hover:text-primary-600"
                     >
-                        Featured
+                        {t.nav.featured}
                     </Link>
                     <Link
                         href="/about"
                         className="text-sm font-medium transition-colors hover:text-primary-600"
                     >
-                        About
+                        {t.nav.about}
                     </Link>
                 </nav>
 
                 {/* Right Side Icons */}
                 <div className="flex items-center gap-2">
+                    <LanguageSwitcher />
                     <Button variant="ghost" size="icon" className="hidden sm:flex">
                         <Search className="h-5 w-5" />
                     </Button>

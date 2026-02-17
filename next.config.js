@@ -15,6 +15,14 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'placehold.co',
             },
+            {
+                protocol: 'https',
+                hostname: 'media.giphy.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.giphy.com',
+            },
         ],
     },
 }
