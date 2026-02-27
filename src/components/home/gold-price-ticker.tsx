@@ -5,13 +5,24 @@ import { useLanguage } from "@/components/providers/language-context"
 import { TrendingUp, TrendingDown, RefreshCw, Minus } from "lucide-react"
 
 interface GoldPriceData {
-    price_per_ounce: number
-    price_gram_24k: number
-    price_gram_22k: number
-    price_gram_21k: number
-    price_gram_18k: number
-    price_gram_14k: number
-    currency: string
+    prices: {
+        USD: {
+            price_per_ounce: number
+            price_gram_24k: number
+            price_gram_22k: number
+            price_gram_21k: number
+            price_gram_18k: number
+            price_gram_14k: number
+        }
+        AMD: {
+            price_per_ounce: number
+            price_gram_24k: number
+            price_gram_22k: number
+            price_gram_21k: number
+            price_gram_18k: number
+            price_gram_14k: number
+        }
+    }
     last_updated: string
     change_percent: number
     change_amount: number
@@ -27,8 +38,11 @@ const KARAT_KEYS = [
     "price_gram_14k",
 ] as const
 
-function formatAMD(value: number): string {
-    return new Intl.NumberFormat("en-US").format(value)
+function formatCurrency(value: number, currency: "USD" | "AMD"): string {
+    return new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: currency === "USD" ? 2 : 0,
+        maximumFractionDigits: currency === "USD" ? 2 : 0
+    }).format(value)
 }
 
 function ShimmerCard() {
@@ -46,6 +60,7 @@ export function GoldPriceTicker() {
     const [data, setData] = useState<GoldPriceData | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
+    const [currency, setCurrency] = useState<"USD" | "AMD">("USD")
 
     const fetchPrices = useCallback(async () => {
         try {
@@ -105,15 +120,43 @@ export function GoldPriceTicker() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        {/* Live badge */}
+                        {/* Live badge or Last updated */}
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                             </span>
                             <span className="text-xs font-medium text-emerald-400">
-                                {t.goldPrice.livePrice}
+                                {data?.last_updated ? (
+                                    <span>
+                                        Updated {
+                                            Math.floor((Date.now() - new Date(data.last_updated).getTime()) / (1000 * 60 * 60)) > 0
+                                                ? `${Math.floor((Date.now() - new Date(data.last_updated).getTime()) / (1000 * 60 * 60))}h ago`
+                                                : Math.floor((Date.now() - new Date(data.last_updated).getTime()) / (1000 * 60)) > 0
+                                                    ? `${Math.floor((Date.now() - new Date(data.last_updated).getTime()) / (1000 * 60))}m ago`
+                                                    : 'Just now'
+                                        }
+                                    </span>
+                                ) : (
+                                    t.goldPrice.livePrice
+                                )}
                             </span>
+                        </div>
+
+                        {/* Currency Toggle */}
+                        <div className="flex bg-white/10 p-1 rounded-lg">
+                            <button
+                                onClick={() => setCurrency("USD")}
+                                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${currency === "USD" ? "bg-amber-500 text-stone-900 shadow" : "text-amber-100 hover:bg-white/5"}`}
+                            >
+                                USD
+                            </button>
+                            <button
+                                onClick={() => setCurrency("AMD")}
+                                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${currency === "AMD" ? "bg-amber-500 text-stone-900 shadow" : "text-amber-100 hover:bg-white/5"}`}
+                            >
+                                AMD
+                            </button>
                         </div>
 
                         {/* Refresh button */}
@@ -137,7 +180,7 @@ export function GoldPriceTicker() {
                                     {t.goldPrice.troyOunce}
                                 </span>
                                 <span className="text-2xl md:text-3xl font-bold text-white tabular-nums">
-                                    ${formatAMD(data.price_per_ounce)}
+                                    {currency === "USD" ? "$" : "֏"}{formatCurrency(data.prices[currency].price_per_ounce, currency)}
                                 </span>
                             </div>
                             <div className="flex items-center gap-3">
@@ -161,9 +204,9 @@ export function GoldPriceTicker() {
                                     </span>
                                 </div>
 
-                                {/* Last updated */}
+                                {/* Last updated (removed since moved to top badge or keep as absolute time) */}
                                 {data.last_updated && (
-                                    <span className="text-xs text-white/30">
+                                    <span className="text-xs text-white/30 hidden md:block">
                                         {t.goldPrice.lastUpdated}:{" "}
                                         {new Date(data.last_updated).toLocaleTimeString()}
                                     </span>
@@ -197,7 +240,7 @@ export function GoldPriceTicker() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                         {KARAT_LABELS.map((label, i) => {
                             const key = KARAT_KEYS[i]
-                            const price = data[key]
+                            const price = data.prices[currency][key]
                             const isPrimary = label === "24K"
 
                             return (
@@ -231,7 +274,7 @@ export function GoldPriceTicker() {
                                         <div className="space-y-1">
                                             <div className={`text-xl md:text-2xl font-bold tabular-nums ${isPrimary ? "text-amber-100" : "text-white/90"
                                                 }`}>
-                                                ${formatAMD(price)}
+                                                {currency === "USD" ? "$" : "֏"}{formatCurrency(data.prices[currency][key], currency)}
                                             </div>
                                             <div className="text-[11px] text-white/30 uppercase tracking-wider">
                                                 {t.goldPrice.perGram}

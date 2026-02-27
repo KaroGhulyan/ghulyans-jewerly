@@ -30,12 +30,12 @@ export function Hero() {
                         {t.hero.subtitle}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-                        <Button size="lg" className="bg-white text-black hover:bg-gray-100" asChild>
+                        <Button size="lg" className="bg-white text-stone-900 font-medium hover:bg-gray-100 hover:text-stone-900 border border-transparent shadow-xl" asChild>
                             <Link href="/products">
                                 {t.hero.shopAll}
                             </Link>
                         </Button>
-                        <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20" asChild>
+                        <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
                             <Link href="/featured">
                                 {t.hero.featured}
                             </Link>

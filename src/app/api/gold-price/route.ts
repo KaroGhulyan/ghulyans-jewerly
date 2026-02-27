@@ -32,13 +32,24 @@ interface CachedData {
 }
 
 export interface GoldPriceData {
-    price_per_ounce: number
-    price_gram_24k: number
-    price_gram_22k: number
-    price_gram_21k: number
-    price_gram_18k: number
-    price_gram_14k: number
-    currency: string
+    prices: {
+        USD: {
+            price_per_ounce: number
+            price_gram_24k: number
+            price_gram_22k: number
+            price_gram_21k: number
+            price_gram_18k: number
+            price_gram_14k: number
+        },
+        AMD: {
+            price_per_ounce: number
+            price_gram_24k: number
+            price_gram_22k: number
+            price_gram_21k: number
+            price_gram_18k: number
+            price_gram_14k: number
+        }
+    }
     last_updated: string
     change_percent: number
     change_amount: number
@@ -79,16 +90,33 @@ export async function GET() {
             throw new Error(`GoldAPI responded with status ${response.status}`)
         }
 
-        const raw: GoldApiResponse = await response.json()
+        // Fetch exchange rates concurrently
+        const [raw, exchangeRes] = await Promise.all([
+            response.json() as Promise<GoldApiResponse>,
+            fetch('https://api.exchangerate-api.com/v4/latest/USD').then(res => res.json())
+        ])
+
+        const amdRate = exchangeRes.rates?.AMD || 400 // fallback rate if api fails
 
         const data: GoldPriceData = {
-            price_per_ounce: Math.round(raw.price),
-            price_gram_24k: Math.round(raw.price_gram_24k),
-            price_gram_22k: Math.round(raw.price_gram_22k),
-            price_gram_21k: Math.round(raw.price_gram_21k),
-            price_gram_18k: Math.round(raw.price_gram_18k),
-            price_gram_14k: Math.round(raw.price_gram_14k),
-            currency: 'USD',
+            prices: {
+                USD: {
+                    price_per_ounce: Math.round(raw.price),
+                    price_gram_24k: Math.round(raw.price_gram_24k),
+                    price_gram_22k: Math.round(raw.price_gram_22k),
+                    price_gram_21k: Math.round(raw.price_gram_21k),
+                    price_gram_18k: Math.round(raw.price_gram_18k),
+                    price_gram_14k: Math.round(raw.price_gram_14k),
+                },
+                AMD: {
+                    price_per_ounce: Math.round(raw.price * amdRate),
+                    price_gram_24k: Math.round(raw.price_gram_24k * amdRate),
+                    price_gram_22k: Math.round(raw.price_gram_22k * amdRate),
+                    price_gram_21k: Math.round(raw.price_gram_21k * amdRate),
+                    price_gram_18k: Math.round(raw.price_gram_18k * amdRate),
+                    price_gram_14k: Math.round(raw.price_gram_14k * amdRate),
+                }
+            },
             last_updated: new Date().toISOString(),
             change_percent: raw.chp ?? 0,
             change_amount: Math.round(raw.ch ?? 0),

@@ -3,7 +3,7 @@ export type Language = 'en' | 'hy'
 export const translations = {
     en: {
         hero: {
-            title: "Exquisite Ghulyan's Jewelry",
+            title: "Exquisite Ghulyan Jewelry",
             subtitle: "Handcrafted with love and tradition. Discover our collection of unique pieces.",
             shopAll: "Shop All Jewelry",
             featured: "View Featured",
