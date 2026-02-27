@@ -3,6 +3,7 @@ import { ProductGrid } from "@/components/product/product-grid"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Hero } from "@/components/home/hero"
+import { GoldPriceTicker } from "@/components/home/gold-price-ticker"
 
 export default async function Home() {
     // Fetch featured products
@@ -33,6 +34,8 @@ export default async function Home() {
             {/* Hero Section */}
             <Hero />
 
+            {/* Gold Prices Section */}
+            <GoldPriceTicker />
 
             {/* Featured Products Section */}
             {featuredProducts.length > 0 && (

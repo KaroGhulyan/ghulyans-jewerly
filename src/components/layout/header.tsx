@@ -45,6 +45,12 @@ export function Header() {
                         {t.nav.products}
                     </Link>
                     <Link
+                        href="/#gold-prices"
+                        className="text-sm font-medium transition-colors hover:text-primary-600"
+                    >
+                        {t.nav.goldPrices}
+                    </Link>
+                    <Link
                         href="/featured"
                         className="text-sm font-medium transition-colors hover:text-primary-600"
                     >
