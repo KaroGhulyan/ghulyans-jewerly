@@ -143,7 +143,7 @@ export function GoldPriceTicker() {
                             </span>
                         </div>
 
-                        {/* Currency Toggle */}
+                        {/* Currency Toggle . */}
                         <div className="flex bg-white/10 p-1 rounded-lg">
                             <button
                                 onClick={() => setCurrency("USD")}
