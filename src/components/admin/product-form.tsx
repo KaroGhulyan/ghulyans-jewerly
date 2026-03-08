@@ -36,7 +36,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
     const router = useRouter()
 
     const form = useForm<ProductFormValues>({
-        resolver: zodResolver(productSchema),
+        resolver: zodResolver(productSchema) as any,
         defaultValues: initialData ? {
             ...initialData,
             images: initialData.images?.[0] || "",
