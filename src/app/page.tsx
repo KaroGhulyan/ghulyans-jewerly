@@ -5,6 +5,8 @@ import Link from "next/link"
 import { Hero } from "@/components/home/hero"
 import { GoldPriceTicker } from "@/components/home/gold-price-ticker"
 
+export const dynamic = "force-dynamic"
+
 export default async function Home() {
     // Fetch featured products
     const featuredProducts = await prisma.product.findMany({

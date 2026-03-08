@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import * as z from "zod"
+import { revalidatePath } from "next/cache"
 
 const productSchema = z.object({
     name: z.string().min(2),
@@ -64,6 +65,10 @@ export async function PATCH(
             },
         })
 
+        revalidatePath('/')
+        revalidatePath('/products')
+        revalidatePath(`/product/${params.id}`)
+
         return NextResponse.json(product)
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -87,6 +92,9 @@ export async function DELETE(
                 id: params.id,
             },
         })
+
+        revalidatePath('/')
+        revalidatePath('/products')
 
         return NextResponse.json(product)
     } catch (error) {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import * as z from "zod"
+import { revalidatePath } from "next/cache"
 
 const productSchema = z.object({
     name: z.string().min(2),
@@ -46,6 +47,9 @@ export async function POST(req: Request) {
                 category: validatedData.category as any,
             },
         })
+
+        revalidatePath('/')
+        revalidatePath('/products')
 
         return NextResponse.json(product)
     } catch (error) {
