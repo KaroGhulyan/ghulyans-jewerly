@@ -23,6 +23,10 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'i.giphy.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'medias.collectorsquare.com',
+            },
         ],
     },
 }
