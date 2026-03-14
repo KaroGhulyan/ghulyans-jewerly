@@ -21,3 +21,19 @@ export function formatDate(date: Date | string): string {
         day: "numeric",
     });
 }
+
+export function getGoogleDriveDirectLink(url: string): string {
+    if (!url.includes("drive.google.com") && !url.includes("googleusercontent.com")) return url;
+    
+    // Extract ID from various Google Drive link formats
+    const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || 
+                       url.match(/[?&]id=([a-zA-Z0-9_-]+)/) ||
+                       url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                       
+    if (fileIdMatch && fileIdMatch[1]) {
+        // This format is often more reliable for direct embedding
+        return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+    }
+
+    return url;
+}

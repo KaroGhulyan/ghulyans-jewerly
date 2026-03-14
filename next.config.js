@@ -27,6 +27,22 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'medias.collectorsquare.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'example.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'drive.google.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.google.com',
+            },
         ],
     },
 }

@@ -22,7 +22,7 @@ export interface CreateProductInput {
 }
 
 export interface UpdateProductInput extends Partial<CreateProductInput> {
-    id: string;
+    id: number;
 }
 
 // Filter and sorting

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 import { LanguageProvider } from "@/components/providers/language-context";
+import { AuthProvider } from "@/components/providers/auth-provider";
 
 // ... (other imports)
 
@@ -26,13 +27,15 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${inter.variable} antialiased min-h-screen flex flex-col`}>
-                <LanguageProvider>
-                    <Header />
-                    <main className="flex-1">
-                        {children}
-                    </main>
-                    <Footer />
-                </LanguageProvider>
+                <AuthProvider>
+                    <LanguageProvider>
+                        <Header />
+                        <main className="flex-1">
+                            {children}
+                        </main>
+                        <Footer />
+                    </LanguageProvider>
+                </AuthProvider>
             </body>
         </html>
     );

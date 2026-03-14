@@ -10,9 +10,14 @@ interface EditProductPageProps {
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
+    const id = parseInt(params.id)
+    if (isNaN(id)) {
+        notFound()
+    }
+
     const product = await prisma.product.findUnique({
         where: {
-            id: params.id,
+            id,
         },
     })
 

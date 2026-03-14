@@ -55,23 +55,33 @@ export function ProductForm({ initialData }: ProductFormProps) {
     async function onSubmit(data: ProductFormValues) {
         setIsLoading(true)
         try {
+            let response;
             if (initialData) {
-                await fetch(`/api/products/${initialData.id}`, {
+                response = await fetch(`/api/products/${initialData.id}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
                 })
             } else {
-                await fetch("/api/products", {
+                response = await fetch("/api/products", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
                 })
             }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("API Error:", errorData);
+                alert(`Error: ${JSON.stringify(errorData)}`);
+                return;
+            }
+
             router.refresh()
             router.push("/admin")
         } catch (error) {
             console.error("Something went wrong", error)
+            alert("Something went wrong. Check console.");
         } finally {
             setIsLoading(false)
         }

@@ -7,14 +7,64 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { formatPrice } from "@/lib/utils"
 import { Product } from "@/types"
-import { ShoppingCart, Eye } from "lucide-react"
+import { Heart, Eye } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useLoginModal } from "@/hooks/use-login-modal"
 
 interface ProductCardProps {
     product: Product
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const { data: session } = useSession()
+    const router = useRouter()
+    const { onOpen } = useLoginModal()
+    const [isFavorite, setIsFavorite] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
     const mainImage = product.images[0] || "/placeholder-jewelry.jpg"
+
+    useEffect(() => {
+        if (session) {
+            fetch("/api/favorites")
+                .then(res => res.json())
+                .then(favorites => {
+                    setIsFavorite(favorites.some((f: any) => f.productId === product.id))
+                })
+        }
+    }, [session, product.id])
+
+    const toggleFavorite = async (e: React.MouseEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        if (!session) {
+            onOpen()
+            return
+        }
+
+        setIsLoading(true)
+        try {
+            if (isFavorite) {
+                await fetch(`/api/favorites?productId=${product.id}`, { method: "DELETE" })
+                setIsFavorite(false)
+            } else {
+                await fetch("/api/favorites", {
+                    method: "POST",
+                    body: JSON.stringify({ productId: product.id }),
+                    headers: { "Content-Type": "application/json" }
+                })
+                setIsFavorite(true)
+            }
+            router.refresh()
+        } catch (error) {
+            console.error("FAVORITE_TOGGLE_ERROR", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     return (
         <Card className="group overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -26,6 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    unoptimized={product.images[0]?.includes('drive.google.com')}
                 />
 
                 {/* Badges */}
@@ -54,6 +105,19 @@ export function ProductCard({ product }: ProductCardProps) {
                     </Button>
                 </div>
             </Link>
+
+            {/* Favorite Button - Outside Link to prevent HTML nesting issues */}
+            <div className="absolute top-3 right-3 z-10">
+                <Button
+                    variant="secondary"
+                    size="icon"
+                    className={`rounded-full shadow-md bg-white/80 backdrop-blur-sm hover:bg-white transition-all duration-300 ${isFavorite ? 'text-red-500' : 'text-gray-400'}`}
+                    onClick={toggleFavorite}
+                    disabled={isLoading}
+                >
+                    <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+                </Button>
+            </div>
 
             <CardContent className="p-4">
                 {/* Category */}
@@ -89,13 +153,14 @@ export function ProductCard({ product }: ProductCardProps) {
             </CardContent>
 
             <CardFooter className="p-4 pt-0">
-                <Button
-                    className="w-full"
-                    disabled={!product.inStock}
-                >
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-                </Button>
+                <Link href={`/product/${product.id}`} className="w-full">
+                    <Button
+                        variant="outline"
+                        className="w-full border-primary-200 text-primary-700 hover:bg-primary-50"
+                    >
+                        View Details
+                    </Button>
+                </Link>
             </CardFooter>
         </Card>
     )

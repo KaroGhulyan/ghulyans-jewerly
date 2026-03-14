@@ -36,9 +36,6 @@ export default async function Home() {
             {/* Hero Section */}
             <Hero />
 
-            {/* Gold Prices Section */}
-            <GoldPriceTicker />
-
             {/* Featured Products Section */}
             {featuredProducts.length > 0 && (
                 <section className="py-16">
@@ -84,41 +81,8 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Why Choose Us Section */}
-            <section className="py-16">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="text-center space-y-4">
-                            <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-                                <span className="text-3xl">💎</span>
-                            </div>
-                            <h3 className="text-xl font-semibold">Quality Craftsmanship</h3>
-                            <p className="text-gray-600">
-                                Each piece is carefully handcrafted by skilled Armenian artisans
-                            </p>
-                        </div>
-                        <div className="text-center space-y-4">
-                            <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-                                <span className="text-3xl">🇦🇲</span>
-                            </div>
-                            <h3 className="text-xl font-semibold">Armenian Heritage</h3>
-                            <p className="text-gray-600">
-                                Traditional designs passed down through generations
-                            </p>
-                        </div>
-                        <div className="text-center space-y-4">
-                            <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center">
-                                <span className="text-3xl">✨</span>
-                            </div>
-                            <h3 className="text-xl font-semibold">Unique Pieces</h3>
-                            <p className="text-gray-600">
-                                One-of-a-kind jewelry you won't find anywhere else
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            {/* Gold Prices Section */}
+            <GoldPriceTicker />
         </div>
     )
 }

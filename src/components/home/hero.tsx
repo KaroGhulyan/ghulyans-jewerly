@@ -35,7 +35,7 @@ export function Hero() {
                                 {t.hero.shopAll}
                             </Link>
                         </Button>
-                        <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
+                        <Button size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white/20 hover:text-white backdrop-blur-sm" asChild>
                             <Link href="/featured">
                                 {t.hero.featured}
                             </Link>

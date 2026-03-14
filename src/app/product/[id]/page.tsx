@@ -2,10 +2,13 @@ import {notFound} from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import {prisma} from "@/lib/prisma"
+import {getServerSession} from "next-auth/next"
+import {authOptions} from "@/lib/auth"
+import {FavoriteToggle} from "./favorite-toggle"
 import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
 import {formatPrice} from "@/lib/utils"
-import {ArrowLeft, ShoppingCart} from "lucide-react"
+import {ArrowLeft, Heart, MessageCircle} from "lucide-react"
 import {ProductGrid} from "@/components/product/product-grid"
 
 export default async function ProductDetailPage({
@@ -13,8 +16,14 @@ export default async function ProductDetailPage({
                                                 }: {
     params: { id: string }
 }) {
+    const id = parseInt(params.id)
+    if (isNaN(id)) {
+        notFound()
+    }
+
+    const session = await getServerSession(authOptions)
     const product = await prisma.product.findUnique({
-        where: {id: params.id},
+        where: {id},
     })
 
     if (!product) {
@@ -70,6 +79,7 @@ export default async function ProductDetailPage({
                                 fill
                                 className="object-cover"
                                 priority
+                                unoptimized={product.images[0]?.includes('drive.google.com')}
                             />
                             {product.featured && (
                                 <div className="absolute top-4 left-4">
@@ -100,6 +110,7 @@ export default async function ProductDetailPage({
                                             alt={`${product.name} ${index + 1}`}
                                             fill
                                             className="object-cover"
+                                            unoptimized={image.includes('drive.google.com')}
                                         />
                                     </div>
                                 ))}
@@ -182,18 +193,27 @@ export default async function ProductDetailPage({
                             </div>
                         </div>
 
-                        {/* Add to Cart Button */}
+                        {/* Actions */}
                         <div className="space-y-4 pt-6">
-                            <Button
-                                size="lg"
-                                className="w-full"
-                                disabled={!product.inStock}
-                            >
-                                <ShoppingCart className="w-5 h-5 mr-2"/>
-                                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-                            </Button>
+                            <div className="flex gap-4">
+                                <a
+                                    href={`https://wa.me/374000000?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1"
+                                >
+                                    <Button
+                                        size="lg"
+                                        className="w-full bg-green-600 hover:bg-green-700 text-white border-0"
+                                    >
+                                        <MessageCircle className="w-5 h-5 mr-2"/>
+                                        Inquire on WhatsApp
+                                    </Button>
+                                </a>
+                                <FavoriteToggle productId={product.id} />
+                            </div>
                             <p className="text-sm text-gray-500 text-center">
-                                Free shipping on orders over 500,000 AMD
+                                Contact us for custom sizing or diamond certification
                             </p>
                         </div>
                     </div>
